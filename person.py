@@ -3,10 +3,10 @@ import visit
 
 class Person:
 
-    def __init__(self, subjid, state):
+    def __init__(self, subjid):
         self.subjid = subjid
         self.visit_list = []
-        self.state = state
+        self.state = 0
         self.visits = 0  # Total visits
         self.visits_ok = 0  # visits excluding missing/phone
         self.region = -1  # 0 for EU, 1 for LatinAm, 2 for NA, 3 for Australasia
@@ -24,7 +24,6 @@ class Person:
     def add_visit(self, v):
         self.visit_list.append(v)
         self.visits = len(self.visit_list)  # Total visits
-        self.state = v.hdcat
 
     def add_info(self, region, sex, race, hxsid, caghigh, caglow, momhd, momagesx, dadhd, dadagesx, fhx):
         self.region = region

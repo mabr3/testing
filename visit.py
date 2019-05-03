@@ -35,13 +35,6 @@ class Visit:
         self.aptscore = aptscore
         self.exfscore = exfscore
 
-    def __str__(self):
-        return {"%s visit"}
-
-
-
-
-
 
 class Motor:
     # UHDRS Motor Diagnostic  Confidence (Motor)
