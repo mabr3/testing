@@ -25,18 +25,18 @@ class Person:
         self.visit_list.append(v)
         self.visits = len(self.visit_list)  # Total visits
 
-    def add_info(self, region, sex, race, hxsid, caghigh, caglow, momhd, momagesx, dadhd, dadagesx, fhx):
-        self.region = region
-        self.sex = 0 if sex == 'f' else 1
-        self.race = race
-        self.hxsid = hxsid
-        self.caghigh = caghigh
-        self.caglow = caglow
-        self.momhd = momhd
-        self.dadhd = dadhd
-        self.fhx = fhx
-        self.dadagesx = dadagesx if dadhd == 1 else 0
-        self.momagesx = momagesx if momhd == 1 else 0
+   #def add_info(self, region, sex, race, hxsid, caghigh, caglow, momhd, momagesx, dadhd, dadagesx, fhx):
+   #    self.region = region
+   #    self.sex = 0 if sex == 'f' else 1
+   #    self.race = race
+   #    self.hxsid = hxsid
+   #    self.caghigh = caghigh
+   #    self.caglow = caglow
+   #    self.momhd = momhd
+   #    self.dadhd = dadhd
+   #    self.fhx = fhx
+   #    self.dadagesx = dadagesx if dadhd == 1 else 0
+   #    self.momagesx = momagesx if momhd == 1 else 0
 
 
 

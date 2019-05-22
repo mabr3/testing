@@ -12,28 +12,49 @@ class Visit:
         # self.cognitive = cognitive  # UHDRS Cognitive form
         # self.pbas = pbas            # PBA-s form
 
-    def __init__(self, seq, age, visit, hdcat, motscore, miscore, tfcscore, fascore, fiscore, sdmt1, sdmt2, sit1, sit2,
-                 sit3, depscore, irascore, psyscore, aptscore, exfscore):
-
-        self.seq = seq
-        self.age = age
-        self.visit = visit
-        self.hdcat = hdcat
-        self.motscore = motscore
-        self.miscore = miscore
-        self.tfcscore = tfcscore
-        self.fascore = fascore
-        self.fiscore = fiscore
-        self.sdmt1 = sdmt1
-        self.sdmt2 = sdmt2
-        self.sit1 = sit1
-        self.sit2 = sit2
-        self.sit3 = sit3
-        self.depscore = depscore
-        self.irascore = irascore
-        self.psyscore = psyscore
-        self.aptscore = aptscore
-        self.exfscore = exfscore
+    #def __init__(self, seq, age, visit, hdcat, motscore, miscore, tfcscore, fascore, fiscore, sdmt1, sdmt2, sit1, sit2,
+    #             sit3, depscore, irascore, psyscore, aptscore, exfscore):
+#
+    #    self.seq = seq
+    #    self.age = age
+    #    self.visit = visit
+    #    self.hdcat = hdcat
+    #    self.motscore = motscore
+    #    self.miscore = miscore
+    #    self.tfcscore = tfcscore
+    #    self.fascore = fascore
+    #    self.fiscore = fiscore
+    #    self.sdmt1 = sdmt1
+    #    self.sdmt2 = sdmt2
+    #    self.sit1 = sit1
+    #    self.sit2 = sit2
+    #    self.sit3 = sit3
+    #    self.depscore = depscore
+    #    self.irascore = irascore
+    #    self.psyscore = psyscore
+    #    self.aptscore = aptscore
+    #    self.exfscore = exfscore
+    
+    def __init__(self):
+        self.seq = -1
+        self.age = -1
+        self.visit = -1
+        self.hdcat = -1
+        self.motscore = -1
+        self.miscore = -1
+        self.tfcscore = -1
+        self.fascore = -1 
+        self.fiscore = -1
+        self.sdmt1 = -1
+        self.sdmt2 = -1
+        self.sit1 = -1
+        self.sit2 = -1
+        self.sit3 = -1
+        self.depscore = -1
+        self.irascore = -1
+        self.psyscore = -1
+        self.aptscore = -1
+        self.exfscore = -1
 
 
 class Motor:
