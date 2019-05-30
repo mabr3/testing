@@ -42,11 +42,14 @@ class Graphs:
             mse.append(s)
 
         r = np.arange(0,control_data.shape[0] + pre_data.shape[0] + post_data.shape[0],1)
-        Y = ['blue'] *control_data.shape[0]  + ['yellow'] * pre_data.shape[0] + ['red'] * post_data.shape[0]
+        Y = ['control'] *control_data.shape[0]  + ['pre'] * pre_data.shape[0] + ['post'] * post_data.shape[0]
         fig = plt.figure(1,figsize=(20,7))
-        plt.scatter(r,mse,color=Y,s=10)
+        #sns.scatter(r,mse,color=Y,s=10)
+        muted    = ["#4878CF", "#6ACC65", "#D65F5F", "#B47CC7", "#C4AD66", "#77BEDB"]
+        newPal   = dict(control = muted[0], pre = muted[4], post = muted[2])
+        sns.scatterplot(r, mse, hue=Y,palette=newPal)
         plt.show()
-        return
+        return plt
         
         
     
@@ -58,10 +61,10 @@ class Graphs:
         plt.legend()
         plt.title("batch size %d, intermediate_dim %d, , latent_dim %d, beta %f" % (batch,intermediate,latent,beta))
         start, end = plt.ylim()
-        plt.yticks(np.arange(0, round(end), 0.1))
+        plt.yticks(np.arange(0, round(end), end/10.0))
         plt.grid(linestyle='--', alpha=0.7)
         print("\n Min -> ", min(history.history['loss']))
-        #plt.show()
+        plt.show()
         return (min(history.history['loss']), min(history.history['val_loss'])), plt
     
     # Plot some info on the available data. For now only a histogram of cag distribution
@@ -232,65 +235,76 @@ class Graphs:
         l1 = enc.predict(pre_data)
         l2 = enc.predict(post_data)
         
+        #l= np.concatenate((l0,l1,l2))
+        
         z0 = pca.fit_transform(l0)
        # pca = PCA(n_components=2)
         z1 = pca.transform(l1)
         #pca = PCA(n_components=2)
         z2 = pca.transform(l2)
         
-        #plot = plt.figure(figsize=(14,7))
-        #plt.scatter(z0[:,0], z0[:,1], facecolor = 'none', edgecolor= 'b',s =10)
-        #plt.scatter(z1[:,0], z1[:,1], facecolor = 'none', edgecolor= 'y', s=10)
-        #plt.scatter(z2[:,0], z2[:,1], facecolors = 'none', edgecolor='r', s=10)
-        #plt.grid()
-        #plt.show()
+        #z = pca.fit_transform(l)
+        
+        Y = ['control'] *control_data.shape[0]  + ['pre'] * pre_data.shape[0] + ['post'] * post_data.shape[0]
+        muted    = ["#4878CF", "#6ACC65", "#D65F5F", "#B47CC7", "#C4AD66", "#77BEDB"]
+        newPal   = dict(control = muted[0], pre = muted[4], post = muted[2])
         
         f=plt.figure(figsize=(20,10))
         plt.grid()
+        #sns.scatterplot(z[:,0], z[:,1], hue=Y,palette=newPal)
         sns.scatterplot(z0[:,0], z0[:,1], color='blue')
         sns.scatterplot(z1[:,0], z1[:,1], color='yellow')
         sns.scatterplot(z2[:,0], z2[:,1], color='red')
         plt.title("PCA")
-        #plt.show()
+        plt.show()
         return plt
     
-    def plot_TSNE(enc, control_data, pre_data, post_data, control_labels, pre_labels, post_labels, persons):
-        #tsne = TSNE(n_components=2, random_state=0, n_iter=2000, perplexity=50)
-        #tsne = TSNE(n_components=2, random_state=0, n_iter=5000, perplexity=2)
+    def explain_PCA(enc, control_data, pre_data, post_data,control_labels, pre_labels, post_labels, persons, n_components):
+        
+        pca = PCA(n_components=n_components)
         l0 = enc.predict(control_data)
         l1 = enc.predict(pre_data)
         l2 = enc.predict(post_data)
         
-        #z0 = tsne.fit_transform(l0)
-        #z1 = tsne.fit_transform(l1)
-        #z2 = tsne.fit_transform(l2)
+        z0 = pca.fit_transform(l0)
+       # pca = PCA(n_components=2)
+        z1 = pca.transform(l1)
+        #pca = PCA(n_components=2)
+        z2 = pca.transform(l2)
+        #l= np.concatenate((l0,l1,l2))
+
+        #z = pca.fit_transform(l)
         
-        
-        #plot = plt.figure(figsize=(14,7))
-        #plt.grid()
-        #plt.scatter(z0[:,0], z0[:,1], facecolors='none', edgecolor='b', s=10)
-        #plt.scatter(z1[:,0], z1[:,1], facecolors='none', edgecolor='y', s=10)
-        #plt.scatter(z2[:,0], z2[:,1], facecolors='none', edgecolor='r', s=10)
-        #plt.show()
-        #
-        
-        fig1, axs1 = plt.subplots(1, 3, figsize=(20, 7), sharex='col')
-        
-        #f=plt.figure(figsize=(20,10))
-        for a, perp  in enumerate([10,25,50]):
-            tsne = TSNE(n_components=2, random_state=0, n_iter=2500, perplexity=perp)
-            z0 = tsne.fit_transform(l0)
-            z1 = tsne.fit_transform(l1)
-            z2 = tsne.fit_transform(l2)        
-            sns.scatterplot(z0[:,0], z0[:,1], color='blue', ax=axs1[a])
-            sns.scatterplot(z1[:,0], z1[:,1], color='yellow', ax=axs1[a])
-            sns.scatterplot(z2[:,0], z2[:,1], color='red', ax=axs1[a])
-            axs1[a].grid()
-        
-        fig1.suptitle("T-SNE")
-        
-        #plt.show()
-        
+        print("Explained variance ratio:")
+        print(pca.explained_variance_ratio_)
+        f0=plt.figure(figsize=(20,10))
+        plt.grid()
+        sns.lineplot(data=pca.explained_variance_ratio_)
+        plt.title("Explained Variance Ratio")
+        plt.show()
         return plt
+        
+        
     
+    def plot_TSNE(enc, control_data, pre_data, post_data, control_labels, pre_labels, post_labels, persons):
+        l0 = enc.predict(control_data)
+        l1 = enc.predict(pre_data)
+        l2 = enc.predict(post_data)
+        l= np.concatenate((l0,l1,l2))
+
+        fig1, axs1 = plt.subplots(1, 3, figsize=(20, 7))
+        Y = ['control'] *control_data.shape[0]  + ['pre'] * pre_data.shape[0] + ['post'] * post_data.shape[0]
+        muted    = ["#4878CF", "#6ACC65", "#D65F5F", "#B47CC7", "#C4AD66", "#77BEDB"]
+        newPal   = dict(control = muted[0], pre = muted[4], post = muted[2])
+
+        for a, perp  in enumerate([10,25,50]):
+            tsne = TSNE(n_components=2, random_state=0, n_iter=3000, perplexity=perp)
+            z = tsne.fit_transform(l)
+            sns.scatterplot(z[:,0], z[:,1], hue=Y, ax=axs1[a],palette=newPal)
+            axs1[a].grid()
+            axs1[a].set_title(perp)
+
+        fig1.suptitle("T-SNE")
+        plt.show()
+        return plt
     
