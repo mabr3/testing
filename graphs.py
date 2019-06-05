@@ -7,6 +7,7 @@ import seaborn as sns
 from math import ceil
 import math
 import sys
+#sns.set()
 
 class Graphs:
     def __init__(self):
@@ -229,32 +230,29 @@ class Graphs:
         return
     
     
-    def plot_PCA(enc, control_data, pre_data, post_data,control_labels, pre_labels, post_labels, persons):
+    def plot_PCA(enc, control_data, pre_data, post_data,control_labels, pre_labels, post_labels, persons,subjids):
         pca = PCA(n_components=2)
-        l0 = enc.predict(control_data)
-        l1 = enc.predict(pre_data)
-        l2 = enc.predict(post_data)
-        
-        #l= np.concatenate((l0,l1,l2))
-        
-        z0 = pca.fit_transform(l0)
-       # pca = PCA(n_components=2)
-        z1 = pca.transform(l1)
-        #pca = PCA(n_components=2)
-        z2 = pca.transform(l2)
-        
-        #z = pca.fit_transform(l)
+
+        data = np.concatenate((control_data,pre_data, post_data))
+        labels = np.concatenate((control_labels, pre_labels, post_labels))
+        l  = enc.predict(data)
+
+        z = pca.fit_transform(l)
         
         Y = ['control'] *control_data.shape[0]  + ['pre'] * pre_data.shape[0] + ['post'] * post_data.shape[0]
+
         muted    = ["#4878CF", "#6ACC65", "#D65F5F", "#B47CC7", "#C4AD66", "#77BEDB"]
         newPal   = dict(control = muted[0], pre = muted[4], post = muted[2])
+        _style = []
         
+        for ind,i in enumerate(labels):
+            _style.append(persons[int(i)].sex)
         f=plt.figure(figsize=(20,10))
+        #print(_style)
         plt.grid()
-        #sns.scatterplot(z[:,0], z[:,1], hue=Y,palette=newPal)
-        sns.scatterplot(z0[:,0], z0[:,1], color='blue')
-        sns.scatterplot(z1[:,0], z1[:,1], color='yellow')
-        sns.scatterplot(z2[:,0], z2[:,1], color='red')
+        sns.scatterplot(z[:,0], z[:,1], hue=Y,palette=newPal, style=_style)
+        
+
         plt.title("PCA")
         plt.show()
         return plt
@@ -266,14 +264,9 @@ class Graphs:
         l1 = enc.predict(pre_data)
         l2 = enc.predict(post_data)
         
-        z0 = pca.fit_transform(l0)
-       # pca = PCA(n_components=2)
-        z1 = pca.transform(l1)
-        #pca = PCA(n_components=2)
-        z2 = pca.transform(l2)
-        #l= np.concatenate((l0,l1,l2))
+        l= np.concatenate((l0,l1,l2))
 
-        #z = pca.fit_transform(l)
+        z = pca.fit_transform(l)
         
         print("Explained variance ratio:")
         print(pca.explained_variance_ratio_)
@@ -298,7 +291,7 @@ class Graphs:
         newPal   = dict(control = muted[0], pre = muted[4], post = muted[2])
 
         for a, perp  in enumerate([10,25,50]):
-            tsne = TSNE(n_components=2, random_state=0, n_iter=3000, perplexity=perp)
+            tsne = TSNE(n_components=2, random_state=0, n_iter=3500, perplexity=perp)
             z = tsne.fit_transform(l)
             sns.scatterplot(z[:,0], z[:,1], hue=Y, ax=axs1[a],palette=newPal)
             axs1[a].grid()
