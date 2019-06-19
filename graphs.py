@@ -135,7 +135,7 @@ class Graphs:
             fig.tight_layout()
             for i in range(NR_VISITS):
                 ax[i].scatter(r,data[:,i,_index], label ='data', facecolors='none', edgecolor=Y, s=15)
-                ax[i].scatter(r,data_preds[:,i,_index], label ='preds', facecolors='none', edgecolor='black', s=15)
+                ax[i].scatter(r,data_preds[:,i,_index], label ='predictions', facecolors='none', edgecolor='black', s=15)
                 ax[i].legend(loc='upper right')
                 ax[i].set_title("Visit %d" % (i+1))
 
@@ -260,9 +260,9 @@ class Graphs:
     def explain_PCA(enc, control_data, pre_data, post_data,control_labels, pre_labels, post_labels, persons, n_components):
         
         pca = PCA(n_components=n_components)
-        l0 = enc.predict(control_data)
-        l1 = enc.predict(pre_data)
-        l2 = enc.predict(post_data)
+        l0,_ = enc.predict(control_data)
+        l1,_ = enc.predict(pre_data)
+        l2,_ = enc.predict(post_data)
         
         l= np.concatenate((l0,l1,l2))
 
@@ -280,18 +280,21 @@ class Graphs:
         
     
     def plot_TSNE(enc, control_data, pre_data, post_data, control_labels, pre_labels, post_labels, persons):
-        l0 = enc.predict(control_data)
-        l1 = enc.predict(pre_data)
-        l2 = enc.predict(post_data)
-        l= np.concatenate((l0,l1,l2))
+        #l0,_ = enc.predict(control_data)
+        #l1,_ = enc.predict(pre_data)
+        #l2,_ = enc.predict(post_data)
+        #l= np.concatenate((l0,l1,l2))
+        data = np.concatenate((control_data,pre_data, post_data))
+        labels = np.concatenate((control_labels, pre_labels, post_labels))
+        l,_  = enc.predict(data)
 
         fig1, axs1 = plt.subplots(1, 3, figsize=(20, 7))
         Y = ['control'] *control_data.shape[0]  + ['pre'] * pre_data.shape[0] + ['post'] * post_data.shape[0]
         muted    = ["#4878CF", "#6ACC65", "#D65F5F", "#B47CC7", "#C4AD66", "#77BEDB"]
         newPal   = dict(control = muted[0], pre = muted[4], post = muted[2])
 
-        for a, perp  in enumerate([10,25,50]):
-            tsne = TSNE(n_components=2, random_state=0, n_iter=3500, perplexity=perp)
+        for a, perp  in enumerate([25,50,100]):
+            tsne = TSNE(n_components=2, random_state=0, n_iter=2500, perplexity=perp)
             z = tsne.fit_transform(l)
             sns.scatterplot(z[:,0], z[:,1], hue=Y, ax=axs1[a],palette=newPal)
             axs1[a].grid()
