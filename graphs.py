@@ -235,7 +235,7 @@ class Graphs:
 
         data = np.concatenate((control_data,pre_data, post_data))
         labels = np.concatenate((control_labels, pre_labels, post_labels))
-        l  = enc.predict(data)
+        l,_  = enc.predict(data)
 
         z = pca.fit_transform(l)
         
